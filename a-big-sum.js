@@ -20,38 +20,6 @@ function getSumOfArray(array) {
   return sum;
 }
 function processData(input) {
-  var inputArrayByNewLine = input.split("\n");
-  var matrixSize = parseInt(inputArrayByNewLine[0].trim(), 10);
-
-  var matrixList = [];
-  for (var index = 1; index < inputArrayByNewLine.length; index++) {
-    if (inputArrayByNewLine[index] !== undefined) {
-      matrixList = inputArrayByNewLine[index].split(" ");
-    }
-  }
-
-  if (matrixSize > 100 || matrixSize < 1)
-    throw new Error("Array size is out of between 1 and 1000");
-
-  var leftToRight = [], rightToLeft = [];
-  for (var index = 0; index < matrixSize; index ++) {
-    var head = index,
-      tail = matrixSize - 1 - head;
-
-    var headNumber =  parseInt(matrixList[head], 10);
-    var tailNumber =  parseInt(matrixList[tail], 10);
-    if (isValid(headNumber))
-      leftToRight.push(headNumber);
-    if (isValid(tailNumber)) {
-      if (head !== tail)
-        rightToLeft.push(parseInt(matrixList[tail], 10));
-    }
-  }
-
-  var sumOfLeftToRight = getSumOfArray(leftToRight);
-  var sumOfRightToLeft = getSumOfArray(rightToLeft);
-
-  if (sumOfLeftToRight)
 }
 
 process.stdin.resume();

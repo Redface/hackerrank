@@ -20,49 +20,34 @@ function readLine() {
 
 /////////////// ignore above this line ////////////////////
 
+
 const assert = require('assert');
 function validateStr(str) {
   const length = str.length;
   assert(length >= 1 && length <= Math.pow(10, 4), 'number of string is invalid');
   assert(str.match(/[^a-z]/g) === null, 'string contains uppercase');
 }
+function getStrCountArr(str) {
+  let asciiTable = {};
+  for (let i = 97; i <= 122; i++) asciiTable[i] = 0;
+  [...str].map((char, index) => asciiTable[char.charCodeAt()]++);
+  return asciiTable;
+}
 function countDeletion(firstStr, secondStr) {
-  const firstLength = firstStr.length, secondLength = secondStr.length;
-  let loopStr, targetStr;
-  if (firstLength > secondLength) {
-    loopStr = firstStr;
-    targetStr = secondStr;
-  } else {
-    loopStr = secondStr;
-    targetStr = firstStr;
-  }
+  const firstCountObj = getStrCountArr(firstStr);
+  const secondCountObj = getStrCountArr(secondStr);
+
   let count = 0;
-  let i = 0, j = 0;
-  let loopLength = loopStr.length;
-  let targetLength = targetStr.length;
-  do {
+  Object.keys(firstCountObj).map(key => count += Math.abs(firstCountObj[key] - secondCountObj[key]));
 
-    const index = loopStr.indexOf(targetStr[j], i);
-
-    if (index !== -1) i++;
-    else count = count + 1;
-    j++;
-
-    console.log(i,j)
-  } while (i < loopLength && j < targetLength);
-  count = count + (loopLength - i) + (targetLength - j);
-  console.log(loopLength - i)
-  console.log(targetLength - j)
   console.log(count);
 }
+
 function main() {
-  // var a = readLine();
-  // var b = readLine();
-  var a = 'aaaa';
-  var b = 'abba';
+  var a = readLine();
+  var b = readLine();
   validateStr(a);
   validateStr(b);
-
 
   countDeletion(a, b);
 }

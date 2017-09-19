@@ -26,30 +26,30 @@ function validateNumberOfInputLines(numberOfLines) {
 }
 function validateBrackets(expression) {
   const length = expression.length;
-  //const allowedChars = ['{','}','(',')', '[',']'];
-  // const violationCheckReg = /[^{}()\[\]]/g;
-  const violationCheckReg = /[{}[\](\)]/g;
-  '{}'.match(violationCheckReg);
+  const violationCheckReg = /[^{}[\](\)]/g;
   assert(1 <= length && length <= Math.pow(10, 3), 'length is exceeded');
-  console.log(expression.match(violationCheckReg));
-  assert(expression.match(violationCheckReg) !== null or expression.match(violationCheckReg).length === expression.split('').length, 'only {}()[] allowed');
+  assert(expression.match(violationCheckReg) === null || expression.match(violationCheckReg).length === 0, 'only {}()[] allowed');
 }
 function isBalancedBrackets(expression) {
   const expArr = expression.split('');
-  let leftHalf = [], rightHalf = [];
+  let leftHalf = [], rightHalf = [], matchTable = { '(': ')', '[': ']', '{': '}' };
   let isBalanced;
   if (expArr.length % 2 !== 0) isBalanced = 'NO';
 
   for (let i = 0, length = expArr.length; i < length; i++) {
-    if (i < length / 2) rightHalf.push(expArr.pop());
-    else leftHalf.push(expArr.pop());
+    const char = expArr.pop();
+    if (i < length / 2) rightHalf.push(char);
+    else leftHalf.push(char);
   }
-  for (let i = 0, length = leftHalf.length; i < length / 2; i++) {
-    if (leftHalf[i] === rightHalf[length - 1]) {
+  console.log(leftHalf, rightHalf);
+  for (let i = 0, length = leftHalf.length; i < length; i++) {
+    console.log(leftHalf[i], rightHalf[length -i -1])
+    if (matchTable[leftHalf[i]] === rightHalf[length - i -1]) {
+      isBalanced = 'YES';
+    } else {
       isBalanced = 'NO';
       break;
     }
-    else isBalanced = 'YES'
   }
   console.log(isBalanced);
 }
@@ -62,7 +62,7 @@ function main() {
   //}
   //validateNumberOfInputLines(t);
 
-  const expression = '{[()]}@';
+  const expression='[]()([{}])[]{}[]' 
   validateBrackets(expression);
   isBalancedBrackets(expression);
 }

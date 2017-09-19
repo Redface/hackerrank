@@ -33,19 +33,18 @@ function validateBrackets(expression) {
 function isBalancedBrackets(expression) {
   validateBrackets(expression);
 
-  const expArr = expression.split('');
   let stack = [];
-  expArr.map(char => {
+  for (let char of expression) {
+
     const length = stack.length;
 
     if (char === '(') stack.push(')');
     else if (char === '[') stack.push(']');
     else if (char === '{') stack.push('}');
     else {
-      if (length === 0 || char !== stack[length - 1]) return 'NO';
-      stack.pop();
+      if (length === 0 || char !== stack.pop()) return 'NO';
     }
-  });
+  }
   return stack.length === 0 ? 'YES' : 'NO';
 }
 function main() {

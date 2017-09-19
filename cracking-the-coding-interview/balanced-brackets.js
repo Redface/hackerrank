@@ -31,39 +31,30 @@ function validateBrackets(expression) {
   assert(expression.match(violationCheckReg) === null || expression.match(violationCheckReg).length === 0, 'only {}()[] allowed');
 }
 function isBalancedBrackets(expression) {
-  const expArr = expression.split('');
-  let leftHalf = [], rightHalf = [], matchTable = { '(': ')', '[': ']', '{': '}' };
-  let isBalanced;
-  if (expArr.length % 2 !== 0) isBalanced = 'NO';
+  validateBrackets(expression);
 
-  for (let i = 0, length = expArr.length; i < length; i++) {
-    const char = expArr.pop();
-    if (i < length / 2) rightHalf.push(char);
-    else leftHalf.push(char);
-  }
-  console.log(leftHalf, rightHalf);
-  for (let i = 0, length = leftHalf.length; i < length; i++) {
-    console.log(leftHalf[i], rightHalf[length -i -1])
-    if (matchTable[leftHalf[i]] === rightHalf[length - i -1]) {
-      isBalanced = 'YES';
-    } else {
-      isBalanced = 'NO';
-      break;
+  const expArr = expression.split('');
+  let stack = [];
+  expArr.map(char => {
+    const length = stack.length;
+
+    if (char === '(') stack.push(')');
+    else if (char === '[') stack.push(']');
+    else if (char === '{') stack.push('}');
+    else {
+      if (length === 0 || char !== stack[length - 1]) return 'NO';
+      stack.pop();
     }
-  }
-  console.log(isBalanced);
+  });
+  return stack.length === 0 ? 'YES' : 'NO';
 }
 function main() {
-  //var t = parseInt(readLine());
-  //for(var a0 = 0; a0 < t; a0++){
-  //    var expression = readLine();
-  //    validateBrackets(expression);
-  //    isBalancedBrackets(expression);
-  //}
-  //validateNumberOfInputLines(t);
+  var t = parseInt(readLine());
+  for (var a0 = 0; a0 < t; a0++) {
+    var expression = readLine();
+    console.log(isBalancedBrackets(expression));
+  }
+  validateNumberOfInputLines(t);
 
-  const expression='[]()([{}])[]{}[]' 
-  validateBrackets(expression);
-  isBalancedBrackets(expression);
 }
 

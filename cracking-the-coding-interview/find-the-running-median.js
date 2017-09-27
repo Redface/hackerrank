@@ -49,6 +49,9 @@ function hasParent(index) {
 function getPeek(arr) {
   return arr[0];
 }
+function getPoll(arr) {
+  return arr.pop();
+}
 
 const MIN_HEAP = 'MIN_HEAP';
 const MAX_HEAP = 'MAX_HEAP';
@@ -72,30 +75,37 @@ function heapifyUpMAX() {
   return targetArr;
 }
 function insert(val) {
-  arr.push(val);
-  minHeap.push(val);
-  maxHeap.push(val);
-  minHeap = heapifyUpMIN();
-  maxHeap = heapifyUpMAX();
-  console.log('arr', arr.sort());
-  console.log('minHeap', minHeap);
-  console.log('maxHeap', maxHeap);
+  if (maxHeap.length === 0 || val < getPeek(maxHeap)) {
+    maxHeap.push(val);
+    maxHeap = heapifyUpMAX();
+  } else {
+    minHeap.push(val);
+    minHeap = heapifyUpMIN();
+  }
+}
+function rebalance() {
+  if (maxHeap.length - minHeap.length > 1) {
+    minHeap.push(getPoll(maxHeap));
+    minHeap = heapifyUpMIN();
+  } else  {
+    minHeap.push(getPoll(maxHeap));
+    maxHeap = heapifyUpMAX();
+  }
 }
 
 // Median
 function getMedian() {
-  // let val = Number.parseFloat((getPeek(minHeap) + getPeek(maxHeap)) / 2).toFixed(1);
   let val;
-  if ((minHeap.length % 2 === 0) && (maxHeap.length % 2 === 0)) val = Number.parseFloat((getPeek(minHeap) + getPeek(maxHeap)) / 2).toFixed(1);
-  else val = Number.parseFloat(maxHeap[Number.parseInt(maxHeap.length / 2)]).toFixed(1);
+  if (maxHeap.length === minHeap.length) val = Number.parseFloat((getPeek(minHeap) + getPeek(maxHeap)) / 2).toFixed(1);
+  else if (maxHeap.length > minHeap.length) val = Number.parseFloat(getPeek(maxHeap)).toFixed(1);
+  else val = Number.parseFloat(getPeek(minHeap)).toFixed(1);
 
   console.log(val);
   return val;
 }
 
-var arr = [];
-var minHeap = [];
 var maxHeap = [];
+var minHeap = [];
 function main() {
   var n = parseInt(readLine());
   var a = [];
@@ -107,6 +117,7 @@ function main() {
   //}
   var validationArr = [94455.0, 57505.0, 20555.0, 36840.0, 53125.0, 36840.0];
   insert(94455);
+  rebalance();
   assert(getMedian() == 94455.0);
   insert(20555);
   assert(getMedian() == 57505.0);

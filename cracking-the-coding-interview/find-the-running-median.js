@@ -20,6 +20,8 @@ function readLine() {
 
 /////////////// ignore above this line ////////////////////
 const assert = require('assert');
+
+//validation
 function validateNumberOfValue(numberOfValue) {
   assert(1 <= numberOfValue && numberOfValue <= Math.pow(10, 5), 'value is out of range');
 }
@@ -27,22 +29,7 @@ function validateValue(val) {
   assert(0 <= val && val <= Math.pow(10, 5), 'value is out of range');
 }
 
-function isOddLength(arr) {
-  return arr.length % 2 !== 0;
-}
-function getIndex(length) {
-  return Number.parseInt((((length + 1) / 2) - 1));
-}
-
-function getOddMedian(arr) {
-  return arr[getIndex(arr.length)];
-}
-function getEvenMedian(arr) {
-  const medianIndex = getIndex(arr.length);
-  const beforeMedianIndex = medianIndex, afterMedianIndex = medianIndex + 1;
-  return (arr[beforeMedianIndex] + arr[afterMedianIndex]) / 2;
-}
-
+// heap sort
 function swap(arr, firstIndex, secondIndex) {
   let targetArr = JSON.parse(JSON.stringify(arr));
   let tmp = targetArr[firstIndex];
@@ -50,47 +37,92 @@ function swap(arr, firstIndex, secondIndex) {
   targetArr[secondIndex] = tmp;
   return targetArr;
 }
-function heapify(arr, n, i) {
-  let largest = i; // init as root
-  const leftChild = 2 * i + 1, rightChild = 2 * i + 2;
-  let targetArr = JSON.parse(JSON.stringify(arr));
-
-  if (leftChild < n && arr[leftChild] > arr[largest]) largest = leftChild;
-  if (rightChild < n && arr[rightChild] > arr[largest]) largest = rightChild;
-
-  if (largest !== i) {
-    targetArr = swap(targetArr, i, largest);
-    targetArr = heapify(targetArr, n, largest);
-  }
-
-  return targetArr;
-
+function getParentIndex(childIndex) {
+  return Number.parseInt((childIndex - 1) / 2);
 }
-function heapSort(arr, n) {
-  let targetArr = JSON.parse(JSON.stringify(arr));
-  for(let i = 0; i < n; i++) targetArr = heapify(targetArr, n, i);
+function getParent(arr, index) {
+  return arr[getParentIndex(index)];
+}
+function hasParent(index) {
+  return getParentIndex(index) >= 0;
+}
+function getPeek(arr) {
+  return arr[0];
+}
 
-  for(let i = n - 1; i >= 0; i--) {
-    const FIRST = 0, LAST = i;
-    targetArr = swap(targetArr, FIRST, LAST);
-    targetArr = heapify(targetArr, i, 0);
+const MIN_HEAP = 'MIN_HEAP';
+const MAX_HEAP = 'MAX_HEAP';
+function heapifyUpMIN() {
+  let targetArr = JSON.parse(JSON.stringify(minHeap));
+
+  let index = targetArr.length - 1;
+  while (hasParent(index) && getParent(targetArr, index) > targetArr[index]) {
+    targetArr = swap(targetArr, getParentIndex(index), index);
+    index = getParentIndex(index);
   }
   return targetArr;
 }
-
-function getMedian(arr) {
-  const sortedArr = heapSort(arr);
-  if (isOddLength(sortedArr)) return Number.parseFloat(getOddMedian(sortedArr)).toFixed(1);
-  else return Number.parseFloat(getEvenMedian(sortedArr)).toFixed(1);
+function heapifyUpMAX() {
+  let targetArr = JSON.parse(JSON.stringify(maxHeap));
+  let index = targetArr.length - 1;
+  while (hasParent(index) && getParent(index) < targetArr[index]) {
+    targetArr = swap(targetArr, getParentIndex(index), index);
+    index = getParentIndex(index);
+  }
+  return targetArr;
+}
+function insert(val) {
+  arr.push(val);
+  minHeap.push(val);
+  maxHeap.push(val);
+  minHeap = heapifyUpMIN();
+  maxHeap = heapifyUpMAX();
+  console.log('arr', arr.sort());
+  console.log('minHeap', minHeap);
+  console.log('maxHeap', maxHeap);
 }
 
+// Median
+function getMedian() {
+  // let val = Number.parseFloat((getPeek(minHeap) + getPeek(maxHeap)) / 2).toFixed(1);
+  let val;
+  if ((minHeap.length % 2 === 0) && (maxHeap.length % 2 === 0)) val = Number.parseFloat((getPeek(minHeap) + getPeek(maxHeap)) / 2).toFixed(1);
+  else val = Number.parseFloat(maxHeap[Number.parseInt(maxHeap.length / 2)]).toFixed(1);
+
+  console.log(val);
+  return val;
+}
+
+var arr = [];
+var minHeap = [];
+var maxHeap = [];
 function main() {
   var n = parseInt(readLine());
   var a = [];
-  validateNumberOfValue(n);
-  for (var a_i = 0; a_i < n; a_i++) {
-    a[a_i] = parseInt(readLine());
-    validateValue(a[a_i]);
-    console.log(getMedian(a));
-  }
+  //validateNumberOfValue(n);
+  //for (var a_i = 0; a_i < n; a_i++) {
+  //  a[a_i] = parseInt(readLine());
+  //  validateValue(a[a_i]);
+  //  insert(a[a_i]);
+  //}
+  var validationArr = [94455.0, 57505.0, 20555.0, 36840.0, 53125.0, 36840.0];
+  insert(94455);
+  assert(getMedian() == 94455.0);
+  insert(20555);
+  assert(getMedian() == 57505.0);
+  insert(20535);
+  assert(getMedian() == 20555.0);
+  insert(53125);
+  assert(getMedian() == 36840.0);
+  insert(73634);
+  assert(getMedian() == 53125.0);
+  insert(148);
+  assert(getMedian() == 36840.0);
+
+  // assert(getMedian() == 94455.0);
+  // assert(getMedian() == 57505.0);
+  // assert(getMedian() == 20555.0);
+  // assert(getMedian() == 36840.0);
+  // assert(getMedian() == 53125.0);
+  // assert(getMedian() == 36840.0);
 }

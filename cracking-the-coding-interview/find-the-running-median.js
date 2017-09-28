@@ -49,11 +49,22 @@ function hasParent(index) {
 function getPeek(arr) {
   return arr[0];
 }
+function getLast(arr) {
+  return arr[arr.length - 1];
+}
 function getMaxPoll() {
-  return maxHeap.pop();
+  const removedVal = getPeek(maxHeap);
+  maxHeap[0] = getLast(maxHeap);
+  maxHeap.pop();
+  heapifyUpMAX();
+  return removedVal;
 }
 function getMinPoll() {
-  return minHeap.pop();
+  const removedVal = getPeek(minHeap);
+  minHeap[0] = getLast(minHeap);
+  minHeap.pop();
+  heapifyUpMIN();
+  return removedVal;
 }
 
 const MIN_HEAP = 'MIN_HEAP';
@@ -78,24 +89,27 @@ function heapifyUpMAX() {
   return targetArr;
 }
 function insert(val) {
-  if (maxHeap.length === 0 || val > getPeek(maxHeap)) {
+  if (maxHeap.length === 0 || val < getPeek(maxHeap)) {
     maxHeap.push(val);
     maxHeap = heapifyUpMAX();
   } else {
     minHeap.push(val);
     minHeap = heapifyUpMIN();
   }
-  console.log('maxHeap', maxHeap);
-  console.log('minHeap', minHeap);
 }
 function rebalance() {
-  if (maxHeap.length - minHeap.length > 1) {
+  const maxSize = maxHeap.length;
+  const minSize = minHeap.length;
+
+  if (maxSize - minSize > 1) {
     minHeap.push(getMaxPoll());
     minHeap = heapifyUpMIN();
-  } else  {
+  } else if (minSize - maxSize > 1) {
     maxHeap.push(getMinPoll());
     maxHeap = heapifyUpMAX();
   }
+  console.log('max', maxHeap);
+  console.log('min', minHeap);
 }
 
 // Median
@@ -105,7 +119,6 @@ function getMedian() {
   else if (maxHeap.length > minHeap.length) val = Number.parseFloat(getPeek(maxHeap)).toFixed(1);
   else val = Number.parseFloat(getPeek(minHeap)).toFixed(1);
 
-  console.log(val);
   return val;
 }
 
@@ -114,34 +127,36 @@ var minHeap = [];
 function main() {
   var n = parseInt(readLine());
   var a = [];
-  //validateNumberOfValue(n);
-  //for (var a_i = 0; a_i < n; a_i++) {
-  //  a[a_i] = parseInt(readLine());
-  //  validateValue(a[a_i]);
-  //  insert(a[a_i]);
-  //}
-  var validationArr = [94455.0, 57505.0, 20555.0, 36840.0, 53125.0, 36840.0];
-  insert(94455);
-  rebalance();
-  assert(getMedian() == 94455.0);
+  validateNumberOfValue(n);
+  for (var a_i = 0; a_i < n; a_i++) {
+    a[a_i] = parseInt(readLine());
+    validateValue(a[a_i]);
+    insert(a[a_i]);
+    rebalance();
+    console.log(getMedian());
+  }
+  //var validationArr = [94455.0, 57505.0, 20555.0, 36840.0, 53125.0, 36840.0];
+  //insert(94455);
+  //rebalance();
+  //assert(getMedian() == 94455.0);
 
-  insert(20555);
-  rebalance();
-  assert(getMedian() == 57505.0);
+  //insert(20555);
+  //rebalance();
+  //assert(getMedian() == 57505.0);
 
-  insert(20535);
-  rebalance();
-  assert(getMedian() == 20555.0);
+  //insert(20535);
+  //rebalance();
+  //assert(getMedian() == 20555.0);
 
-  insert(53125);
-  rebalance();
-  assert(getMedian() == 36840.0);
+  //insert(53125);
+  //rebalance();
+  //assert(getMedian() == 36840.0);
 
-  insert(73634);
-  rebalance();
-  assert(getMedian() == 53125.0);
+  //insert(73634);
+  //rebalance();
+  //assert(getMedian() == 53125.0);
 
-  insert(148);
-  rebalance();
-  assert(getMedian() == 36840.0);
+  //insert(148);
+  //rebalance();
+  //assert(getMedian() == 36840.0);
 }

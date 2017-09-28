@@ -43,12 +43,24 @@ function getParentIndex(childIndex) {
 function getParent(arr, index) {
   return arr[getParentIndex(index)];
 }
-function getLeftChild(arr, index) { return arr[getLeftChildIndex(index)];}
-function getRightChild(arr, index) { return arr[getRightChildIndex(index)];}
-function getLeftChildIndex(parentIndex) { return parentIndex * 2 + 1;}
-function getRightChildIndex(parentIndex) { return parentIndex * 2 + 2;}
-function hasLeftChild(arr, index) { return getLeftChildIndex(index) < arr.length;}
-function hasRightChild(arr, index) { return getRightChildIndex(index) < arr.length;}
+function getLeftChild(arr, index) {
+  return arr[getLeftChildIndex(index)];
+}
+function getRightChild(arr, index) {
+  return arr[getRightChildIndex(index)];
+}
+function getLeftChildIndex(parentIndex) {
+  return parentIndex * 2 + 1;
+}
+function getRightChildIndex(parentIndex) {
+  return parentIndex * 2 + 2;
+}
+function hasLeftChild(arr, index) {
+  return getLeftChildIndex(index) < arr.length;
+}
+function hasRightChild(arr, index) {
+  return getRightChildIndex(index) < arr.length;
+}
 function hasParent(index) {
   return getParentIndex(index) >= 0;
 }
@@ -68,7 +80,6 @@ function getMaxPoll() {
 }
 function getMinPoll() {
   const removedVal = getPeek(minHeap);
-  console.log('min removedVal', removedVal);
   minHeap[0] = getLast(minHeap);
   minHeap.pop();
   heapifyUpMIN();
@@ -84,19 +95,25 @@ function maxHeapInsert(val) {
 }
 
 function heapifyUpMIN() {
-  let index = minHeap.length - 1;
-  while (hasParent(index) && getParent(minHeap, index) > minHeap[index]) {
-    console.log('before swap', minHeap);
-    minHeap = swap(minHeap, getParentIndex(index), index);
-    console.log('after swap', minHeap);
-    index = getParentIndex(index);
+  let lowest = minHeap.length - 1;
+  let parentIndex = getParentIndex(lowest);
+  while (hasParent(lowest) && getParent(minHeap, lowest) > minHeap[lowest]) {
+    if (hasRightChild(minHeap, parentIndex)) {
+      lowest = getLeftChild(minHeap, parentIndex) < getRightChild(minHeap, parentIndex) ? getLeftChildIndex(parentIndex) : getRightChildIndex(parentIndex);
+    }
+    minHeap = swap(minHeap, parentIndex, lowest);
+    lowest = parentIndex;
   }
 }
 function heapifyUpMAX() {
-  let index = maxHeap.length - 1;
-  while (hasParent(index) && getParent(maxHeap, index) < maxHeap[index]) {
-    maxHeap = swap(maxHeap, getParentIndex(index), index);
-    index = getParentIndex(index);
+  let largest = maxHeap.length - 1;
+  let parentIndex = getParentIndex(largest);
+  while (hasParent(largest) && getParent(maxHeap, largest) < maxHeap[largest]) {
+    if (hasRightChild(maxHeap, parentIndex)) {
+      largest = getLeftChild(maxHeap, parentIndex) > getRightChild(maxHeap, parentIndex) ? getLeftChildIndex(parentIndex) : getRightChildIndex(parentIndex);
+    }
+    maxHeap = swap(maxHeap, getParentIndex(largest), largest);
+    largest = getParentIndex(largest);
   }
 }
 function insert(val) {

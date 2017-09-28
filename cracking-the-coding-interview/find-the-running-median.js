@@ -43,6 +43,12 @@ function getParentIndex(childIndex) {
 function getParent(arr, index) {
   return arr[getParentIndex(index)];
 }
+function getLeftChild(arr, index) { return arr[getLeftChildIndex(index)];}
+function getRightChild(arr, index) { return arr[getRightChildIndex(index)];}
+function getLeftChildIndex(parentIndex) { return parentIndex * 2 + 1;}
+function getRightChildIndex(parentIndex) { return parentIndex * 2 + 2;}
+function hasLeftChild(arr, index) { return getLeftChildIndex(index) < arr.length;}
+function hasRightChild(arr, index) { return getRightChildIndex(index) < arr.length;}
 function hasParent(index) {
   return getParentIndex(index) >= 0;
 }
@@ -54,6 +60,7 @@ function getLast(arr) {
 }
 function getMaxPoll() {
   const removedVal = getPeek(maxHeap);
+  console.log('max removedVal', removedVal);
   maxHeap[0] = getLast(maxHeap);
   maxHeap.pop();
   heapifyUpMAX();
@@ -61,52 +68,52 @@ function getMaxPoll() {
 }
 function getMinPoll() {
   const removedVal = getPeek(minHeap);
+  console.log('min removedVal', removedVal);
   minHeap[0] = getLast(minHeap);
   minHeap.pop();
   heapifyUpMIN();
   return removedVal;
 }
+function minHeapInsert(val) {
+  minHeap.push(val);
+  heapifyUpMIN();
+}
+function maxHeapInsert(val) {
+  maxHeap.push(val);
+  heapifyUpMAX();
+}
 
-const MIN_HEAP = 'MIN_HEAP';
-const MAX_HEAP = 'MAX_HEAP';
 function heapifyUpMIN() {
-  let targetArr = JSON.parse(JSON.stringify(minHeap));
-
-  let index = targetArr.length - 1;
-  while (hasParent(index) && getParent(targetArr, index) > targetArr[index]) {
-    targetArr = swap(targetArr, getParentIndex(index), index);
+  let index = minHeap.length - 1;
+  while (hasParent(index) && getParent(minHeap, index) > minHeap[index]) {
+    console.log('before swap', minHeap);
+    minHeap = swap(minHeap, getParentIndex(index), index);
+    console.log('after swap', minHeap);
     index = getParentIndex(index);
   }
-  return targetArr;
 }
 function heapifyUpMAX() {
-  let targetArr = JSON.parse(JSON.stringify(maxHeap));
-  let index = targetArr.length - 1;
-  while (hasParent(index) && getParent(index) < targetArr[index]) {
-    targetArr = swap(targetArr, getParentIndex(index), index);
+  let index = maxHeap.length - 1;
+  while (hasParent(index) && getParent(maxHeap, index) < maxHeap[index]) {
+    maxHeap = swap(maxHeap, getParentIndex(index), index);
     index = getParentIndex(index);
   }
-  return targetArr;
 }
 function insert(val) {
   if (maxHeap.length === 0 || val < getPeek(maxHeap)) {
-    maxHeap.push(val);
-    maxHeap = heapifyUpMAX();
+    maxHeapInsert(val);
   } else {
-    minHeap.push(val);
-    minHeap = heapifyUpMIN();
+    minHeapInsert(val);
   }
 }
 function rebalance() {
   const maxSize = maxHeap.length;
   const minSize = minHeap.length;
 
-  if (maxSize - minSize > 1) {
-    minHeap.push(getMaxPoll());
-    minHeap = heapifyUpMIN();
-  } else if (minSize - maxSize > 1) {
-    maxHeap.push(getMinPoll());
-    maxHeap = heapifyUpMAX();
+  if (maxSize - minSize >= 2) {
+    minHeapInsert(getMaxPoll());
+  } else if (minSize - maxSize >= 2) {
+    maxHeapInsert(getMinPoll());
   }
   console.log('max', maxHeap);
   console.log('min', minHeap);
@@ -114,9 +121,12 @@ function rebalance() {
 
 // Median
 function getMedian() {
+  const maxSize = maxHeap.length;
+  const minSize = minHeap.length;
+
   let val;
-  if (maxHeap.length === minHeap.length) val = Number.parseFloat((getPeek(minHeap) + getPeek(maxHeap)) / 2).toFixed(1);
-  else if (maxHeap.length > minHeap.length) val = Number.parseFloat(getPeek(maxHeap)).toFixed(1);
+  if (maxSize === minSize) val = Number.parseFloat((getPeek(minHeap) + getPeek(maxHeap)) / 2).toFixed(1);
+  else if (maxSize > minSize) val = Number.parseFloat(getPeek(maxHeap)).toFixed(1);
   else val = Number.parseFloat(getPeek(minHeap)).toFixed(1);
 
   return val;

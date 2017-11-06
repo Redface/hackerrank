@@ -116,7 +116,7 @@ class Node {
     let searchObject = this;
     for (let i = 0; i < word.length; i++) {
       const el = word.charAt(i);
-      if (!searchObject.nodes[el]) searchObject.link(el, new node());
+      if (!searchObject.nodes[el]) searchObject.link(el, new Node());
       searchObject.nodes[el].increaseCount();
       searchObject = searchObject.nodes[el];
     }

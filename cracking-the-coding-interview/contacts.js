@@ -77,3 +77,48 @@ function main() {
     else if (op === FIND) console.log(contactObj.find(contact));
   }
 }
+
+
+// another solution with node/link
+class Node {
+
+  constructor() {
+    this.amount = 0;
+    this.letter = '';
+    this.nodes = {};
+  }
+
+  increaseCount() {
+    this.amount = this.amount + 1;
+  }
+
+  link(letter, node) {
+    this.nodes[letter] = node;
+  }
+
+  find(word) {
+    let currentWords = null;
+    let searchObject = this.nodes;
+    for (let i = 0; i < word.length; i++) {
+      const el = word.charAt(i);
+      if (searchObject[el]) {
+        currentWords = searchObject[el].amount;
+        searchObject = searchObject[el].nodes;
+      } else {
+        currentWords = 0;
+        break;
+      }
+    }
+    if (currentWords !== null) console.log(currentWords);
+  }
+
+  add(word) {
+    let searchObject = this;
+    for (let i = 0; i < word.length; i++) {
+      const el = word.charAt(i);
+      if (!searchObject.nodes[el]) searchObject.link(el, new node());
+      searchObject.nodes[el].increaseCount();
+      searchObject = searchObject.nodes[el];
+    }
+  }
+}
